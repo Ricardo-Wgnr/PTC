@@ -1,0 +1,3 @@
+/home/ricardo/Downloads/PTC/Serialemu-master/CMakeFiles/serialemu.dir
+/home/ricardo/Downloads/PTC/Serialemu-master/CMakeFiles/edit_cache.dir
+/home/ricardo/Downloads/PTC/Serialemu-master/CMakeFiles/rebuild_cache.dir
