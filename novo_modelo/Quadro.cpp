@@ -11,8 +11,13 @@ Quadro::Quadro(const std::vector<char> & dados) {
 
 Quadro::Quadro() {}
 
-void Quadro::setControle(const char & controle) {
-    this->controle = controle;
+void Quadro::setControle(const int & controle) {
+    this->controle &= 0x7f;
+    this->controle |= controle << 3;
+}
+
+int Quadro::getControle() {
+    return (this->controle & 0x80) >> 7;
 }
 
 void Quadro::setIdProto(const char & idProto) {
@@ -36,8 +41,9 @@ int Quadro::getSequencia() {
     return (this->controle & 0x8) >> 3;
 }
 
-// &= 0xf07 (and logico com 1111 0111
-// |= (or logico) >> 3 (desloca bits)
+std::vector<char> Quadro::getDados() {
+    return this->dados;
+}
 
 std::vector<char> Quadro::serialize(bool data) {
     std::vector<char> serializado;

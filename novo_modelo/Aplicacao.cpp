@@ -10,6 +10,7 @@ Aplicacao::Aplicacao(): Subcamada(0,0) {
 
 void Aplicacao::recebe(Quadro quadro) {
     //parte 1, escrever terminal
+    vector<char>dados = quadro.getDados();
     for (auto c: dados) {
         std::cout << c;
     }
