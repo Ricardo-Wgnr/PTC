@@ -17,11 +17,12 @@ private:
     Estado estadoAtual;
     int n;
     int m;
+    Quadro quadroTx;
 public:
     Arq();
-    void mef(Quadro quadro, bool tx);
-    void handleOcioso(Quadro quadro, bool tx);
-    void handleEspera(Quadro quadro, bool tx);
+    void mef(Quadro quadro, bool tx, bool timeout);
+    void handleOcioso(Quadro quadro, bool tx, bool timeout);
+    void handleEspera(Quadro quadro, bool tx, bool timeout);
     void handle_timeout() override;
     void handle() override;
     void envia(Quadro quadro) override;

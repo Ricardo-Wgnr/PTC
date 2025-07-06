@@ -18,7 +18,7 @@ public:
 
     Quadro();
 
-    void setControle(const char & controle);
+    void setControle(const int & controle);
     void setIdProto(const char & idProto);
     void setDados(const std::vector<char> &dados);
     std::vector<char> serialize(bool data);
@@ -26,6 +26,8 @@ public:
     void setSequencia(int sequencia);
     void setReservado(char reservado);
     int getSequencia();
+    std::vector<char> getDados();
+    int getControle();
 };
 
 

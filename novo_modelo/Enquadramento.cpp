@@ -33,6 +33,10 @@ vector<char> gera_quadro(const vector<char> & dados) {
 void Enquadramento::envia(Quadro quadro) {
     //modo correto
     vector<char> buffer = quadro.serialize(true);
+    auto crc = make_crc16(buffer);
+    crc.generate_into(buffer);
+    auto quadroFinal = gera_quadro(buffer);
+    rf.write(quadroFinal);
 //    vector<char> buffer = dados;
 //    auto crc = make_crc16(buffer);
 //    crc.generate_into(buffer);
@@ -54,7 +58,11 @@ void Enquadramento::recebe(Quadro quadro) {
 void Enquadramento::handle() {
     auto buffer = rf.read_byte();
     if (mef.mef(buffer, false)) {
-        superior->recebe(mef.get_dados());
+        auto dados = mef.get_dados();
+        dados.pop_back();
+        dados.pop_back();
+        Quadro quadro = quadro.deserializer(dados);
+        superior->recebe(quadro);
     }
 }
 
