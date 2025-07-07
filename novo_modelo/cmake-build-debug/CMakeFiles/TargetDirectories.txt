@@ -1,9 +1,0 @@
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/CMakeFiles/novo_modelo.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/_deps/serialpp-build/CMakeFiles/SerialPP.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/_deps/serialpp-build/CMakeFiles/edit_cache.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/_deps/serialpp-build/CMakeFiles/rebuild_cache.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/_deps/poller-build/CMakeFiles/poller.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/_deps/poller-build/CMakeFiles/edit_cache.dir
-/home/ricardo/Downloads/PTC/Unidade2/novo_modelo/cmake-build-debug/_deps/poller-build/CMakeFiles/rebuild_cache.dir
