@@ -4,10 +4,11 @@
 
 #include "Arq.h"
 
-Arq::Arq() : Subcamada(0, 5000) {
+Arq::Arq() : Subcamada(5000) {
     this->m = 0;
     this->n = 0;
     estadoAtual = Estado::Ocioso;
+    disable_timeout();
 }
 
 void Arq::mef(Quadro quadro, bool tx, bool timeout) {
@@ -26,6 +27,8 @@ void Arq::handleOcioso(Quadro quadro, bool tx, bool timeout) {
         quadro.setSequencia(this->n);
         quadro.setControleInt(0);
         inferior->envia(quadro);
+        this->quadros.push(quadro);
+        enable_timeout();
         estadoAtual = Estado::Espera;
     } else if (tx == false) {
         if (quadro.getSequencia() == this->m) {
@@ -41,19 +44,30 @@ void Arq::handleOcioso(Quadro quadro, bool tx, bool timeout) {
             ack.setControleInt(1);
             ack.setSequencia(not this->m);
             ack.setReservado(0);
-            inferior->recebe(ack);
+            inferior->envia(ack);
         }
     } 
 }
 
 void Arq::handleEspera(Quadro quadro, bool tx, bool timeout) {
-    if (tx && (timeout)) {
-        inferior->envia(this->quadroTx);
+    if (tx && timeout) {
+        inferior->envia(this->quadros.front());
     } else if (tx == false) {
         if (quadro.getControle() == 1) {
             if (quadro.getSequencia() == this->n) {
-                this->n = not this->n;
-                estadoAtual = Estado::Ocioso;
+                if (this->quadros.size() == 1) {
+                    this->quadros.pop();
+                    this->n = not this->n;
+                    estadoAtual = Estado::Ocioso;
+                    disable_timeout();
+                } else {
+                    this->quadros.pop();
+                    this->n = not this->n;
+                    Quadro & atual = this->quadros.front();
+                    atual.setControleInt(0);
+                    atual.setSequencia(this->n);
+                    inferior->envia(quadros.front());
+                }
             }
         } else if (quadro.getSequencia() == this->m) {
             Quadro ack;
@@ -70,11 +84,12 @@ void Arq::handleEspera(Quadro quadro, bool tx, bool timeout) {
             ack.setReservado(0);
             inferior->envia(ack);
         }
+    } else if (tx && !timeout) {
+        this->quadros.push(quadro);
     }
 }
 
 void Arq::envia(Quadro quadro) {
-    this->quadroTx = quadro;
     this->mef(quadro, true, false);
 }
 

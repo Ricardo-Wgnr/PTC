@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include "Subcamada.h"
+#include <queue>
 
 class Arq: public Subcamada {
 enum class Estado:uint8_t {
@@ -17,7 +18,7 @@ private:
     Estado estadoAtual;
     int n;
     int m;
-    Quadro quadroTx;
+    std::queue<Quadro> quadros;
 public:
     Arq();
     void mef(Quadro quadro, bool tx, bool timeout);

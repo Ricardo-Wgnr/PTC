@@ -12,6 +12,7 @@
 class Subcamada: public Callback {
 public:
     Subcamada(int fd, long timeout);
+    Subcamada(long timeout);
     virtual void envia(Quadro quadro) = 0;
     virtual void recebe(Quadro quadro) = 0;
     void conecta(Subcamada * acima);

@@ -59,6 +59,7 @@ void Enquadramento::handle() {
     auto buffer = rf.read_byte();
     if (mef.mef(buffer, false)) {
         auto dados = mef.get_dados();
+        auto checker = make_crc16(dados);
         dados.pop_back();
         dados.pop_back();
         Quadro q;

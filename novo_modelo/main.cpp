@@ -12,7 +12,7 @@ int main (int argc, char * argv[]) {
     }
 
     Serial rf(argv[1]);
-    Enquadramento enquadramento(rf, 5000);
+    Enquadramento enquadramento(rf, 2000);
     Aplicacao aplicacao;
     Arq arq;
     Poller sched;
@@ -22,5 +22,6 @@ int main (int argc, char * argv[]) {
 
     sched.adiciona(&enquadramento);
     sched.adiciona(&aplicacao);
+    sched.adiciona(&arq);
     sched.despache();
 }
