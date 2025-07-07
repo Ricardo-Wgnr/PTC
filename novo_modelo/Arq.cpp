@@ -4,7 +4,7 @@
 
 #include "Arq.h"
 
-Arq::Arq() : Subcamada(-1, 5000) {
+Arq::Arq() : Subcamada(0, 5000) {
     this->m = 0;
     this->n = 0;
     estadoAtual = Estado::Ocioso;
@@ -24,20 +24,21 @@ void Arq::mef(Quadro quadro, bool tx, bool timeout) {
 void Arq::handleOcioso(Quadro quadro, bool tx, bool timeout) {
     if (tx && (timeout == false)) {
         quadro.setSequencia(this->n);
+        quadro.setControleInt(0);
         inferior->envia(quadro);
         estadoAtual = Estado::Espera;
     } else if (tx == false) {
         if (quadro.getSequencia() == this->m) {
             Quadro ack;
-            ack.setControle(1);
+            ack.setControleInt(1);
             ack.setSequencia(this->m);
             ack.setReservado(0);
             inferior->envia(ack);
             superior->recebe(quadro);
-            this->m = not m;
+            this->m = not this->m;
         } else {
             Quadro ack;
-            ack.setControle(1);
+            ack.setControleInt(1);
             ack.setSequencia(not this->m);
             ack.setReservado(0);
             inferior->recebe(ack);
@@ -49,27 +50,25 @@ void Arq::handleEspera(Quadro quadro, bool tx, bool timeout) {
     if (tx && (timeout)) {
         inferior->envia(this->quadroTx);
     } else if (tx == false) {
-        if (quadro.getSequencia() == this->m) {
+        if (quadro.getControle() == 1) {
+            if (quadro.getSequencia() == this->n) {
+                this->n = not this->n;
+                estadoAtual = Estado::Ocioso;
+            }
+        } else if (quadro.getSequencia() == this->m) {
             Quadro ack;
-            ack.setControle(1);
+            ack.setControleInt(1);
             ack.setSequencia(this->m);
             ack.setReservado(0);
             inferior->envia(ack);
             superior->recebe(quadro);
-            this->m = not m;
+            this->m = not this->m;
         } else {
             Quadro ack;
-            ack.setControle(1);
+            ack.setControleInt(1);
             ack.setSequencia(not this->m);
             ack.setReservado(0);
             inferior->envia(ack);
-        }
-    } else if (tx && (timeout == false)) {
-        if (quadro.getControle() == 1) {
-            if (quadro.getSequencia() == this->n) {
-                this->n = not n;
-                estadoAtual = Estado::Ocioso;
-            }
         }
     }
 }

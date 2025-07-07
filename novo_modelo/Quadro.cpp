@@ -11,9 +11,13 @@ Quadro::Quadro(const std::vector<char> & dados) {
 
 Quadro::Quadro() {}
 
-void Quadro::setControle(const int & controle) {
+void Quadro::setControleInt(const int & controle) {
     this->controle &= 0x7f;
-    this->controle |= controle << 3;
+    this->controle |= controle << 7;
+}
+
+void Quadro::setControleChar(const char & controle) {
+    this->controle = controle;
 }
 
 int Quadro::getControle() {
@@ -33,7 +37,7 @@ void Quadro::setReservado(char reservado) {
 }
 
 void Quadro::setSequencia(int sequencia) {
-    this->controle &= 0xf07;
+    this->controle &= 0xf7;
     this->controle |= sequencia << 3;
 }
 
@@ -62,15 +66,17 @@ std::vector<char> Quadro::serialize(bool data) {
 
 Quadro Quadro::deserializer(const std::vector<char> & dados) {
     Quadro quadro;
-    quadro.setControle(dados[0]);
+    quadro.setControleChar(dados[0]);
     quadro.setReservado(dados[1]);
-    quadro.setIdProto(dados[2]);
-    auto it = dados.begin();
-    it++;
-    it++;
-    it++;
-    std::vector<char> buffer(it, dados.end());
-    quadro.setDados(buffer);
+    if (quadro.getControle() == 0) {
+        quadro.setIdProto(dados[2]);
+        auto it = dados.begin();
+        it++;
+        it++;
+        it++;
+        std::vector<char> buffer(it, dados.end());
+        quadro.setDados(buffer);
+    }
 
     return quadro;
 }

@@ -3,6 +3,7 @@
 #include "Enquadramento.h"
 #include "Aplicacao.h"
 #include "Serial.h"
+#include "Arq.h"
 
 int main (int argc, char * argv[]) {
     if (argc != 2) {
@@ -13,9 +14,11 @@ int main (int argc, char * argv[]) {
     Serial rf(argv[1]);
     Enquadramento enquadramento(rf, 5000);
     Aplicacao aplicacao;
+    Arq arq;
     Poller sched;
 
-    enquadramento.conecta(&aplicacao);
+    enquadramento.conecta(&arq);
+    arq.conecta(&aplicacao);
 
     sched.adiciona(&enquadramento);
     sched.adiciona(&aplicacao);

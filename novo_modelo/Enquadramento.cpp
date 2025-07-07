@@ -61,7 +61,8 @@ void Enquadramento::handle() {
         auto dados = mef.get_dados();
         dados.pop_back();
         dados.pop_back();
-        Quadro quadro = quadro.deserializer(dados);
+        Quadro q;
+        Quadro quadro = q.deserializer(dados);
         superior->recebe(quadro);
     }
 }

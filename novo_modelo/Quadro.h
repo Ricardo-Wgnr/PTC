@@ -18,7 +18,8 @@ public:
 
     Quadro();
 
-    void setControle(const int & controle);
+    void setControleInt(const int & controle);
+    void setControleChar(const char & controle);
     void setIdProto(const char & idProto);
     void setDados(const std::vector<char> &dados);
     std::vector<char> serialize(bool data);
