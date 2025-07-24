@@ -4,6 +4,9 @@
 
 #include "Arq.h"
 
+#include <iostream>
+#include <bits/ostream.tcc>
+
 Arq::Arq() : Subcamada(5000) {
     this->m = 0;
     this->n = 0;
@@ -35,7 +38,7 @@ void Arq::handleOcioso(Quadro quadro, bool tx, bool timeout) {
             Quadro ack;
             ack.setControleInt(1);
             ack.setSequencia(this->m);
-            ack.setReservado(0);
+            ack.setIdSessao(0);
             inferior->envia(ack);
             superior->recebe(quadro);
             this->m = not this->m;
@@ -43,7 +46,7 @@ void Arq::handleOcioso(Quadro quadro, bool tx, bool timeout) {
             Quadro ack;
             ack.setControleInt(1);
             ack.setSequencia(not this->m);
-            ack.setReservado(0);
+            ack.setIdSessao(0);
             inferior->envia(ack);
         }
     } 
@@ -73,7 +76,7 @@ void Arq::handleEspera(Quadro quadro, bool tx, bool timeout) {
             Quadro ack;
             ack.setControleInt(1);
             ack.setSequencia(this->m);
-            ack.setReservado(0);
+            ack.setIdSessao(0);
             inferior->envia(ack);
             superior->recebe(quadro);
             this->m = not this->m;
@@ -81,7 +84,7 @@ void Arq::handleEspera(Quadro quadro, bool tx, bool timeout) {
             Quadro ack;
             ack.setControleInt(1);
             ack.setSequencia(not this->m);
-            ack.setReservado(0);
+            ack.setIdSessao(0);
             inferior->envia(ack);
         }
     } else if (tx && !timeout) {
@@ -90,11 +93,23 @@ void Arq::handleEspera(Quadro quadro, bool tx, bool timeout) {
 }
 
 void Arq::envia(Quadro quadro) {
-    this->mef(quadro, true, false);
+    if (quadro.getIsControle()) {
+        std::cout << "arq, envia quadro de controle" << std::endl;
+        inferior->envia(quadro);
+    } else {
+        std::cout << "arq, envia quadro de dados" << std::endl;
+        this->mef(quadro, true, false);
+    }
 }
 
 void Arq::recebe(Quadro quadro) {
-    this->mef(quadro, false, false);
+    if (quadro.getIsControle()) {
+        std::cout << "arq, recebe quadro de controle" << std::endl;
+        superior->recebe(quadro);
+    } else {
+        std::cout << "arq, recebe quadro de dados" << std::endl;
+        this->mef(quadro, false, false);
+    }
 }
 
 void Arq::handle() {

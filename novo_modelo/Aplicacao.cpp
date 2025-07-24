@@ -40,7 +40,7 @@ void Aplicacao::handle() {
     std::string linha;
     std::getline(std::cin, linha);
     Quadro quadro;
-    quadro.setReservado(0);
+    quadro.setIdSessao(0);
     quadro.setIdProto(0);
     std::vector<char> buffer (linha.begin(), linha.end());
     quadro.setDados(buffer);

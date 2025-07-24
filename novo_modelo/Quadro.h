@@ -10,22 +10,25 @@
 class Quadro {
 private:
     char controle;
-    char reservado;
+    char idSessao;
     char idProto;
     std::vector<char> dados;
 public:
     Quadro(const std::vector<char> & dados);
 
     Quadro();
-
+    void setSessao(const int & bit0, const int & bit1, const int & bit2);
+    std::vector<int> getTipoControle();
+    bool getIsControle();
     void setControleInt(const int & controle);
     void setControleChar(const char & controle);
     void setIdProto(const char & idProto);
     void setDados(const std::vector<char> &dados);
-    std::vector<char> serialize(bool data);
+    std::vector<char> serialize(bool data, bool controle);
     Quadro deserializer(const std::vector<char> & dados);
     void setSequencia(int sequencia);
-    void setReservado(char reservado);
+    void setIdSessao(char idSessao);
+    char getIdSessao();
     int getSequencia();
     std::vector<char> getDados();
     int getControle();

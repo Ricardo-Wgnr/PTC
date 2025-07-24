@@ -35,6 +35,8 @@ add_executable(novo_modelo main.cpp
         Quadro.h
         Arq.cpp
         Arq.h
+        Sessao.cpp
+        Sessao.h
 )
 
 # This command links socketpp library to your executable

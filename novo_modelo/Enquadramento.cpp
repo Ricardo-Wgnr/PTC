@@ -32,7 +32,21 @@ vector<char> gera_quadro(const vector<char> & dados) {
 
 void Enquadramento::envia(Quadro quadro) {
     //modo correto
-    vector<char> buffer = quadro.serialize(true);
+    vector<char> buffer;
+    if (quadro.getIsControle()) {
+        buffer = quadro.serialize(false, true);
+    } else {
+        if (quadro.getControle()) {
+            buffer = quadro.serialize(false, false);
+        } else {
+            buffer = quadro.serialize(true, false);
+        }
+    }
+    std::cout << "enquadramento, payload antes do crc: ";
+    for (unsigned char c : buffer) {
+        printf("%02X ", c);
+    }
+    std::cout << std::endl;
     auto crc = make_crc16(buffer);
     crc.generate_into(buffer);
     auto quadroFinal = gera_quadro(buffer);
@@ -59,9 +73,13 @@ void Enquadramento::handle() {
     auto buffer = rf.read_byte();
     if (mef.mef(buffer, false)) {
         auto dados = mef.get_dados();
-        auto checker = make_crc16(dados);
         dados.pop_back();
         dados.pop_back();
+        std::cout << "enquadramento, quadro recebido: ";
+        for (unsigned char c : dados) {
+            printf("%02X ", c); // imprime cada byte como 2 dígitos hexadecimais
+        }
+        std::cout << std::endl;
         Quadro q;
         Quadro quadro = q.deserializer(dados);
         superior->recebe(quadro);

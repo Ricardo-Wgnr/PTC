@@ -6,10 +6,28 @@
 
 Quadro::Quadro(const std::vector<char> & dados) {
     this->dados = dados;
-    this->reservado = 0;
+    this->idSessao = 0;
 }
 
 Quadro::Quadro() {}
+
+void Quadro::setSessao(const int & bit0, const int & bit1, const int & bit2) {
+    this->controle &= 0x00;
+    this->controle |= bit0;
+    this->controle |= bit1 << 1;
+    this->controle |= bit2 << 2;
+}
+
+std::vector<int> Quadro::getTipoControle() {
+    std::vector<int> tipoControle;
+    tipoControle.push_back(this->controle & 0x1);
+    tipoControle.push_back((this->controle & 0x2) >> 1);
+    return tipoControle;
+}
+
+bool Quadro::getIsControle() {
+    return (this->controle & 0x4) >> 2;
+}
 
 void Quadro::setControleInt(const int & controle) {
     this->controle &= 0x7f;
@@ -32,8 +50,12 @@ void Quadro::setDados(const std::vector<char> & dados) {
     this->dados = dados;
 }
 
-void Quadro::setReservado(char reservado) {
-    Quadro::reservado = reservado;
+void Quadro::setIdSessao(char idSessao) {
+    this->idSessao = idSessao;
+}
+
+char Quadro::getIdSessao() {
+    return this->idSessao;
 }
 
 void Quadro::setSequencia(int sequencia) {
@@ -49,34 +71,36 @@ std::vector<char> Quadro::getDados() {
     return this->dados;
 }
 
-std::vector<char> Quadro::serialize(bool data) {
+std::vector<char> Quadro::serialize(bool data, bool controle) {
     std::vector<char> serializado;
 
     serializado.push_back(this->controle);
-    serializado.push_back(this->reservado);
-    if (data) {
+    serializado.push_back(this->idSessao);
+    if (controle) {
         serializado.push_back(this->idProto);
-        for (auto c : this->dados) {
-            serializado.push_back(c);
+    } else {
+        if (data) {
+            serializado.push_back(this->idProto);
+            for (auto c : this->dados) {
+                serializado.push_back(c);
+            }
         }
     }
-
     return serializado;
 }
 
 Quadro Quadro::deserializer(const std::vector<char> & dados) {
     Quadro quadro;
     quadro.setControleChar(dados[0]);
-    quadro.setReservado(dados[1]);
+    quadro.setIdSessao(dados[1]);
     if (quadro.getControle() == 0) {
-        quadro.setIdProto(dados[2]);
-        auto it = dados.begin();
-        it++;
-        it++;
-        it++;
-        std::vector<char> buffer(it, dados.end());
-        quadro.setDados(buffer);
+        if (quadro.getIsControle()) {
+            quadro.setIdProto(dados[2]);
+        } else {
+            quadro.setIdProto(dados[2]);
+            std::vector<char> buffer(dados.begin()+3, dados.end());
+            quadro.setDados(buffer);
+        }
     }
-
     return quadro;
 }
